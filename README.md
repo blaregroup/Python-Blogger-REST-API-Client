@@ -4,9 +4,9 @@ With the help of these project codes, anyone can easily interact with blogger RE
 
 ## Getting Started
 
-Well, To Get Start With This Project. First You Have To Clone This Git Repo. Type In Your Terminal `git clone THIS_REPO_URL`.
-And Second Thing, Keep In Your Mind, This Project Can Do Every Thing.. Thats Possible To Do With Blogger API. This Class had many automatic functions.
-if you able to understand.. You Can Appriciate my work That Star Button.
+Well, to get start with this project. First you have to clone this git repo. Type In Your Terminal `git clone THIS_REPO_URL`.
+and second thing, Keep In Your Mind, this Project can do every thing.. thats possible to do with blogger API. this python script had many automatic functions.
+so, if you able to understand.. You Can Appriciate my work by clicking that Star Button.
 
 ok 
 

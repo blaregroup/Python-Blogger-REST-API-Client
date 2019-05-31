@@ -198,6 +198,9 @@ class OAuthentication:
         
         # Read Record
     def readRecord(self):
+        '''
+        Read Record From API Crediantial JSON File and Return Dictionary Object
+        '''
         obj = open(self.db, 'r').read()
         print(obj)
         # if noting available
@@ -208,6 +211,9 @@ class OAuthentication:
         return json.loads(obj)
     
     def checkRecord(self, key):
+        '''
+        Check, if key is Available in JSON crediantial file.
+        '''
         obj = self.readRecord()
         if not obj:
             return False
@@ -216,6 +222,9 @@ class OAuthentication:
         return False
     
     def updateRecord(self, key, value):
+        '''
+        Updat Record in JSON Crediantial File
+        '''
         data = self.readRecord()
         data[key] = value
         obj = open(self.db, 'w')
@@ -226,18 +235,27 @@ class OAuthentication:
     
         # add Record
     def addRecord(self, record={}):
+        '''
+        Add Record in JSON crediantial file
+        '''
         old = self.readRecord()
         new = {**old, **record}
         return self.writeRecord(record=new)
     
         # write Record
     def writeRecord(self, record={}):
+        '''
+        Write Record To JSON Crediantial File
+        '''
         obj = open(self.db, 'w')
         obj.write(json.dumps(record))
         obj.close()
         return
     
     def request_tokens(self):
+        '''
+        Get New Authorization Access Token
+        '''
         payload = {
             'code':self.checkRecord('authorization'),
             'redirect_uri':"http://localhost:8081/",
@@ -251,6 +269,9 @@ class OAuthentication:
         return self.addRecord(record=req.json())
     
     def refresh(self):
+        '''
+        Get New Access Token
+        '''
         payload = {
             'client_id':self.client_id,
             'client_secret':self.client_secret,
@@ -264,6 +285,9 @@ class OAuthentication:
         return obj
     
     def reset(self):
+        '''
+        Reset Crediantials
+        '''
         self.writeRecord()
         return
     
@@ -290,6 +314,13 @@ class Blogger:
             
             
     def getRequest(self, section , data={}):
+        '''
+        To Generate a blogger api GET request. 
+
+        parameters
+            Section   : pass section url. for more details, check usages in source code
+            data      : Get Request Data feilds
+        '''
         url = os.path.join("https://www.googleapis.com/blogger/v3/", section)
         if self.verbose:print(url)
         req = requests.get(url, data, headers={'Authorization':"Bearer "+self.oauth.access_token})
@@ -298,15 +329,9 @@ class Blogger:
         return (req.status_code, req.json())
     
     def getIdByUrl(self, url):
-        #
-        # JSON Reponse With
-        #   Feilds : kind, id, name, description, published, updated, url, selfLink
-        #   Dictionary:
-        #          posts -> totalItems, selfLink
-        #          pages -> totalItems, selfLink
-        #          locale-> language, country, variant
-        #
         '''
+        Get Blog ID Using BLog URL.
+
         Response Template
         
         {
@@ -342,9 +367,10 @@ class Blogger:
         return self.getRequest('blogs/byurl', data={'url':self.blogurl})
         #
     def getUsers(self):
-        
-        
         '''
+        Get List of Blog USERS.
+
+
         Response Template
         
             {
@@ -382,6 +408,8 @@ class Blogger:
     
     def getPosts(self, data={}):
         '''
+        Get Few Starting Posts Details
+
         Response Template
         
         {
@@ -431,8 +459,9 @@ class Blogger:
 
     def getAllPostList(self, template="items(title, id, url,author)"):
         '''
-        Auto nextPageToken Handler. Get All Data in Once, And You Can Also Filter Data Using Template Parameter. 
-        
+        Auto nextPageToken Handler. 
+        Get All Data in Once, And You Can Also Filter Data 
+        Using Template Parameter. 
         
         '''
         collect = []
@@ -472,6 +501,8 @@ class Blogger:
     
     def getBlogsAccess(self):
         '''
+        Get The List of Blog, User had access. 
+
         Response Template
         
         {
@@ -509,6 +540,8 @@ class Blogger:
     def getPost(self, postid):
         # https://www.googleapis.com/blogger/v3/blogs/blogId/posts/postId
         '''
+        Get Specific Post Complete Details using post ID
+
         Response Template
         
         {
@@ -540,6 +573,8 @@ class Blogger:
         return self.getRequest('blogs/{}/posts/{}'.format(self.blogid, postid))
     def searchPost(self, query):
         '''
+        Search Post By Passing Query
+
         Response Template
         
         {
@@ -581,6 +616,8 @@ class Blogger:
     
     def newPost(self, post_data):
         '''
+        New Post
+
         post_data Example
             {
               "title": "A new post",
@@ -629,6 +666,9 @@ class Blogger:
     
     
     def deletePost(self, postid):
+        '''
+        Delete Post. Pass Post ID
+        '''
         url = "https://www.googleapis.com/blogger/v3/blogs/{}/posts/{}".format(self.blogid, postid)
         req = requests.delete(url, headers={'Authorization':"Bearer "+self.oauth.access_token})
         if self.verbose:print(req.status_code)
@@ -636,8 +676,11 @@ class Blogger:
         return (req.status_code)
     
     def getPostByPath(self, path):
+
         # https://www.googleapis.com/blogger/v3/blogs/blogId/posts/bypath?path=post-
         '''
+        Get POST details by using post url.
+
         Request
             path=/2011/08/latest-updates-august-1st.html
             
@@ -672,7 +715,8 @@ class Blogger:
     
     def updatePost_hard(self, postid, post_data):
         '''
-        
+        Update Post Using PUT Request
+
         Example Post_Data
         
             "url": "http://brettmorgan-test2.blogspot.com/2012/05/new-post_20.html",
@@ -740,6 +784,8 @@ class Blogger:
     
     def updatePost_soft(self, postid, post_data):
         '''
+        Update POST using Patch Request
+
         
         Example Post_Data [Pass Only The Fields, Need To Update]
         
